@@ -1,0 +1,23 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Databases
+*.db
+
+# Uploads
+uploads/
+
+# FAISS
+faiss_index/
+
+# Environment
+.env
+
+# React
+node_modules/
+dist/
+
+# Mac
+.DS_Store
