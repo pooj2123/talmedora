@@ -1,8 +1,0 @@
-to work on:-
-1. orc
-2. improve UI/UX (add logo majorly)
-3. imporve it to multiple file formats 
-4. improve assistant 
-5. replace local LLM with some API based AI
-6. maintain chat history
-7. auth and logins
