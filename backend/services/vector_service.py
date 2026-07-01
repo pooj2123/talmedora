@@ -1,4 +1,5 @@
 import os
+import re
 
 from langchain_community.vectorstores import FAISS
 
@@ -21,6 +22,32 @@ embedding_function = HuggingFaceEmbeddings(
 )
 
 FAISS_PATH = "faiss_index"
+
+
+def summarize_text(text, max_chars=240):
+    cleaned = re.sub(r"\s+", " ", text.strip())
+    if not cleaned:
+        return ""
+
+    sentences = re.split(r"(?<=[.!?])\s+", cleaned)
+    summary_parts = []
+    total = 0
+
+    for sentence in sentences:
+        if total + len(sentence) <= max_chars:
+            summary_parts.append(sentence)
+            total += len(sentence) + 1
+        else:
+            break
+
+    summary = " ".join(summary_parts).strip()
+    if not summary:
+        summary = cleaned[:max_chars].rstrip()
+
+    if len(summary) < len(cleaned):
+        summary = summary.rstrip(" .,!?:;") + "..."
+
+    return summary
 
 
 if os.path.exists(FAISS_PATH):
@@ -98,7 +125,10 @@ def rebuild_vectorstore():
                     report.filepath,
 
                     "user_id":
-                    report.user_id
+                    report.user_id,
+
+                    "summary":
+                    summarize_text(chunk)
                 }
             )
 

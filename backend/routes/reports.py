@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi import Header
+from fastapi import BackgroundTasks
 from fastapi.responses import FileResponse
 
 from database.db import SessionLocal
@@ -144,7 +145,9 @@ def delete_report(
 
     report_id: int,
 
-    authorization: str = Header(...)
+    authorization: str = Header(...),
+
+    background_tasks: BackgroundTasks = BackgroundTasks()
 
 ):
 
@@ -210,7 +213,9 @@ def delete_report(
 
     db.commit()
 
-    rebuild_vectorstore()
+    background_tasks.add_task(
+        rebuild_vectorstore
+    )
 
     db.close()
 
