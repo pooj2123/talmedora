@@ -22,6 +22,13 @@ class Report(Base):
 
     filepath = Column(String)
 
+    summary = Column(String)
+
+    risk_level = Column(String)
+
+    risk_assessment = Column(String)
+
+    analysis_json = Column(String)
     user_id = Column(
         Integer,
         ForeignKey("users.id")

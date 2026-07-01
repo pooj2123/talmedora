@@ -12,6 +12,8 @@ function Reports() {
 
   const [search, setSearch] = useState("");
 
+  const [expandedReport, setExpandedReport] = useState(null);
+
   // Fetch reports
   const fetchReports = async () => {
 
@@ -191,63 +193,103 @@ function Reports() {
 
           <div className="space-y-4">
 
-            {filteredReports.map((report) => (
+  {filteredReports.map((report) => (
 
-              <div
-                key={report.id}
-                className="border rounded-2xl p-5 flex justify-between items-center bg-gray-50"
-              >
+    <div
+      key={report.id}
+      className="border rounded-2xl p-5 bg-gray-50"
+    >
 
-                <div>
+      <div className="flex justify-between items-start">
 
-                  <h3 className="font-bold text-lg">
-                    {report.filename}
-                  </h3>
+        <div className="flex-1">
 
-                  <p className="text-gray-600 text-sm mt-1">
-                    {report.description}
-                  </p>
+          <h3 className="font-bold text-lg">
+            {report.filename}
+          </h3>
 
-                </div>
+          <p className="text-gray-600 text-sm mt-1">
+            {report.description}
+          </p>
 
-                <div className="flex gap-3">
+          <div className="mt-4">
 
-                  <button
-                    onClick={() =>
-                      handleDownload(
-                        report.id,
-                        report.filename
-                      )
-                    }
-                    className="bg-red-500 text-white px-4 py-2 rounded-xl"
-                  >
-                    Download
-                  </button>
+            <button
+              onClick={() =>
+                setExpandedReport(
+                  expandedReport === report.id
+                    ? null
+                    : report.id
+                )
+              }
+              className="text-red-500 font-medium text-sm"
+            >
+              {expandedReport === report.id
+                ? "Hide AI Summary"
+                : "View AI Summary"}
+            </button>
 
-                  <button
-                    onClick={() =>
-                      handleDelete(
-                        report.id
-                      )
-                    }
-                    className="bg-gray-200 px-4 py-2 rounded-xl"
-                  >
-                    Delete
-                  </button>
+            {expandedReport === report.id && (
 
-                </div>
+              <div className="mt-3 bg-white border rounded-xl p-4">
+
+                <h4 className="font-semibold mb-2">
+                  AI Summary
+                </h4>
+
+                <p className="text-gray-700 whitespace-pre-line">
+                  {report.summary}
+                </p>
 
               </div>
 
-            ))}
+            )}
 
           </div>
+
+        </div>
+
+        <div className="flex gap-3 ml-6">
+
+          <button
+            onClick={() =>
+              handleDownload(
+                report.id,
+                report.filename
+              )
+            }
+            className="bg-red-500 text-white px-4 py-2 rounded-xl"
+          >
+            Download
+          </button>
+
+          <button
+            onClick={() =>
+              handleDelete(
+                report.id
+              )
+            }
+            className="bg-gray-200 px-4 py-2 rounded-xl"
+          >
+            Delete
+          </button>
 
         </div>
 
       </div>
 
     </div>
+
+  ))}
+
+</div>
+
+      </div>
+
+    </div>
+    </div>
+
+
   );
 }
 

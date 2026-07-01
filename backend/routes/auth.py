@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import HTTPException
 
 from pydantic import BaseModel
 
@@ -86,22 +87,22 @@ def login(request: LoginRequest):
 
         db.close()
 
-        return {
-            "message":
-            "User not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
 
     if not verify_password(
-        request.password,
-        user.password
-    ):
+    request.password,
+    user.password
+):
 
         db.close()
 
-        return {
-            "message":
-            "Invalid password"
-        }
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid password"
+        )
 
     token = create_access_token({
 

@@ -4,11 +4,15 @@ from fastapi import File
 from fastapi import Form
 from fastapi import Header
 
+import json
+
+
 import shutil
 import os
 import fitz
 
 from services import vector_service
+from services.analysis_service import analyze_report
 
 from langchain_text_splitters import (
     RecursiveCharacterTextSplitter
@@ -97,6 +101,8 @@ async def upload_file(
     for page in doc:
 
         text += page.get_text()
+        
+    analysis = analyze_report(text)
 
     splitter = RecursiveCharacterTextSplitter(
 
@@ -138,14 +144,24 @@ async def upload_file(
 
     report = Report(
 
-        filename=file.filename,
+    filename=file.filename,
 
-        description=description,
+    description=description,
 
-        filepath=file_path,
+    filepath=file_path,
 
-        user_id=user.id
-    )
+    summary=analysis["summary"],
+
+    risk_level=analysis["risk_level"],
+
+    risk_assessment=analysis["risk_assessment"],
+
+    analysis_json=json.dumps(analysis),
+
+    user_id=user.id
+
+    
+)
 
     db.add(report)
 
@@ -155,12 +171,15 @@ async def upload_file(
 
     return {
 
-        "message":
-        "Chunks stored in FAISS vector DB",
+    "message": "Report uploaded successfully",
 
-        "filename":
-        file.filename,
+    "filename": file.filename,
 
-        "description":
-        description
-    }
+    "description": description,
+
+    "summary": analysis["summary"],
+
+    "risk_level": analysis["risk_level"],
+
+    "risk_assessment": analysis["risk_assessment"]
+}

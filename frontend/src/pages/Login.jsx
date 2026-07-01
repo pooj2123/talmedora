@@ -21,10 +21,22 @@ export default function Login() {
           password
         }
       );
-
       console.log(
         "LOGIN RESPONSE:",
         response.data
+      );
+      
+      if (!response.data.access_token) {
+      
+        alert("Login failed");
+      
+        return;
+      
+      }
+      
+      localStorage.setItem(
+        "token",
+        response.data.access_token
       );
 
       localStorage.setItem(
@@ -36,9 +48,19 @@ export default function Login() {
 
     } catch (error) {
 
-      alert("Login failed");
-
-      console.log(error);
+      console.error(error);
+    
+      localStorage.removeItem("token");
+    
+      if (error.response) {
+    
+        alert(error.response.data.detail);
+    
+      } else {
+    
+        alert("Unable to connect to the server.");
+    
+      }
     }
   };
 

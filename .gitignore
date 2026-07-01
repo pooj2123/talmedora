@@ -21,3 +21,4 @@ dist/
 
 # Mac
 .DS_Storeinfo.txt
+.DS_Store
